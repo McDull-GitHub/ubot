@@ -24,8 +24,14 @@ with TelegramClient('userbot', api_id, api_hash) as client:
     @client.on(events.NewMessage(pattern='-delme', outgoing=True))
     async def delme(event):
         print("delme is running")
-        async for message in event.client.iter_messages(event.chat_id, from_user="me"):
-            await message.delete()
+        input_chat = await event.get_input_chat()
+        messages = []
+        async for message in event.client.iter_messages(input_chat, from_user="me"):
+            messages.append(message)
+            if len(messages) == 100:
+                await event.client.delete_messages(input_chat, messages)
+        if messages:
+            await event.client.delete_messages(input_chat, messages)
 
     @client.on(events.NewMessage(pattern='-delfrom', outgoing=True))
     async def delfrom(event):
@@ -35,14 +41,11 @@ with TelegramClient('userbot', api_id, api_hash) as client:
             return
         input_chat = await event.get_input_chat()
         messages = []
-        count = 0
         async for message in event.client.iter_messages(input_chat, min_id=event.reply_to_msg_id):
             messages.append(message)
-            count += 1
-            messages.append(event.reply_to_msg_id)
             if len(messages) == 100:
                 await event.client.delete_messages(input_chat, messages)
         if messages:
             await event.client.delete_messages(input_chat, messages)
-
+        await event.client.delete_messages(input_chat, event.reply_to_msg_id)
     client.run_until_disconnected()
