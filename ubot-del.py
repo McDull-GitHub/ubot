@@ -43,7 +43,7 @@ with TelegramClient('userbot', api_id, api_hash) as client:
                     await event.client.delete_messages(input_chat, messages)
                 break
             loop += 1
-            if (message.from_id.user_id == myid):
+            if (message.from_id.user_id == myid or message.from_id == myid):
                 messages.append(message)
             if loop == 100:
                 if messages:
@@ -67,5 +67,5 @@ with TelegramClient('userbot', api_id, api_hash) as client:
             await event.client.delete_messages(input_chat, messages)
         print("-delfrom ->\tdone")
     myid = client.get_me().id
-    print("Usage:\n\t-delit\t ->\tDetele a message you reply\n\t-delme\t ->\tDetele all messages you send\n\t-delall\t ->\tDetele all messages\n\t-delfrom ->\tDetele messages from where you reply\n")
+    print("\nUsage:\n\t-delit\t ->\tDetele a message you reply\n\t-delme\t ->\tDetele all messages you send\n\t-delall\t ->\tDetele all messages\n\t-delfrom ->\tDetele messages from where you reply\n")
     client.run_until_disconnected()
